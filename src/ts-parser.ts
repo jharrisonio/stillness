@@ -1,9 +1,11 @@
 import * as ts from 'typescript';
 import * as path from "path";
 
-type TreeNode = {
+type TreeNode = any | {
     name: string;
     kind: string;
+    pos: number;
+    end: number
     type?: string;
     docs?: ts.SymbolDisplayPart[];
     children: TreeNode[];
@@ -24,11 +26,7 @@ export class Parser {
     }
 
     getTree() {
-        let tree: TreeNode = {
-            name: 'root',
-            kind: ts.SyntaxKind.SourceFile,
-            children: []
-        };
+        let tree: TreeNode = {};
         if (this.sourceFile !== undefined) {
             tree = this.getChildren(this.sourceFile);
         }
@@ -39,6 +37,8 @@ export class Parser {
         let tree: TreeNode = {
             name: node.getText(),
             kind: ts.SyntaxKind[node.kind],
+            pos: node.pos,
+            end: node.end,
             children: []
         };
 
